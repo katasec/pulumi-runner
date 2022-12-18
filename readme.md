@@ -53,7 +53,7 @@ logger := utils.ConfigureLogger("log1.txt")
 And use the above logger whilst creating `RemoteProgramArgs`:
 
 ```go
-	// logger := utils.ConfigureLogger("log1.txt")
+	logger := utils.ConfigureLogger("log1.txt")
 	args := &RemoteProgramArgs{
 		ProjectName: "ArkInit",
 		GitURL:      "https://github.com/katasec/ArkInit.git",
