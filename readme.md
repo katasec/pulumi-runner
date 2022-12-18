@@ -6,11 +6,11 @@ Helper function to run a remote pulumi program. Here's an example:
 package main
 
 func main() {
-	// Create a new pulumi program
-	p := createPulumiProgram()
+    // Create a new pulumi program
+    p := createPulumiProgram()
 
     // Run Pulumi Up
-	p.Up()
+    p.Up()
 
 }
 
