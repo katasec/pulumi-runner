@@ -1,6 +1,6 @@
 # Overview 
 
-Helper function to run a remote pulumi program. Here's a sample usage:
+Helper function to run a remote pulumi program. Here's an example:
 
 ```go
 package main
@@ -42,3 +42,26 @@ func createPulumiProgram() *RemoteProgram {
 
 ```
 
+## Output Options
+
+By default, output is sent to `stdout`. Stream output to a file using the following to create an `io.Writer` point to a log file:
+
+```
+logger := utils.ConfigureLogger("log1.txt")
+```
+
+And use the above logger whilst creating `RemoteProgramArgs`:
+
+```go
+	// logger := utils.ConfigureLogger("log1.txt")
+	args := &RemoteProgramArgs{
+		ProjectName: "ArkInit",
+		GitURL:      "https://github.com/katasec/ArkInit.git",
+        .
+        . //other options here
+        .
+
+		Runtime: "dotnet",
+		Writer:  logger,
+	}
+```
