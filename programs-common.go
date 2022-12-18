@@ -56,6 +56,17 @@ func validateRemoteArgs(args *RemoteProgramArgs) {
 	}
 }
 
+func validateLocalArgs(args *InlineProgramArgs) {
+
+	if args.ProjectName == "" {
+		exitMessage("ProjectName cannot be empty")
+	}
+
+	if args.StackName == "" {
+		exitMessage("StackName cannot be empty")
+	}
+}
+
 func exitMessage(message string) {
 	utils.Fprintln(os.Stderr, message)
 	os.Exit(1)

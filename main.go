@@ -1,18 +1,22 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
+)
 
 func main() {
 	fmt.Println("test")
 
 	// Create a new pulumi program
-	p := createPulumiProgram()
+	p := createInlineProgram()
 
 	// Run Pulumi Up
 	p.Preview()
 }
 
-func createPulumiProgram() *RemoteProgram {
+func createRemoteProgram() *RemoteProgram {
 	args := &RemoteProgramArgs{
 		ProjectName: "ArkInit",
 		GitURL:      "https://github.com/katasec/ArkInit.git",
@@ -36,4 +40,23 @@ func createPulumiProgram() *RemoteProgram {
 
 	// Create a new pulumi program
 	return NewRemoteProgram(args)
+}
+
+func createInlineProgram() *InlineProgram {
+	args := &InlineProgramArgs{
+		ProjectName: "Inline",
+		StackName:   "dev",
+		Runtime:     "go",
+		PulumiFn:    inlineFunc,
+	}
+
+	// Create a new pulumi program
+	return NewInlineProgram(args)
+}
+
+func inlineFunc(ctx *pulumi.Context) error {
+
+	ctx.Export("message", pulumi.String("hello world"))
+
+	return nil
 }

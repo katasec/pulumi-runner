@@ -79,7 +79,7 @@ func (r *RemoteProgram) Up() error {
 	// Refresh before Pulumi Up
 	refreshStack(w, r.ctx, r.stack)
 
-	// Run destroy
+	// Run Up
 	_, err := r.stack.Up(r.ctx, optup.ProgressStreams(w))
 	if err != nil {
 		utils.Fprintln(w, fmt.Sprintf("Failed to update stack: %v", err))
@@ -94,11 +94,9 @@ func (r *RemoteProgram) Preview() error {
 
 	// Get writer for logging
 	w := r.Writer
-	utils.Fprintln(w, "****** Starting Pulumi Up")
-	// Refresh before Pulumi Up
-	refreshStack(w, r.ctx, r.stack)
+	utils.Fprintln(w, "****** Starting Pulumi Preview")
 
-	// Run destroy
+	// Run Preview
 	_, err := r.stack.Preview(r.ctx, optpreview.ProgressStreams(w))
 	if err != nil {
 		utils.Fprintln(w, fmt.Sprintf("Failed to update stack: %v", err))
