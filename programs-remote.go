@@ -1,4 +1,4 @@
-package pulumirunner
+package main
 
 import (
 	"context"
@@ -10,6 +10,7 @@ import (
 	"github.com/katasec/pulumi-runner/utils"
 	"github.com/pulumi/pulumi/sdk/v3/go/auto"
 	"github.com/pulumi/pulumi/sdk/v3/go/auto/optdestroy"
+	"github.com/pulumi/pulumi/sdk/v3/go/auto/optpreview"
 	"github.com/pulumi/pulumi/sdk/v3/go/auto/optup"
 )
 
@@ -38,7 +39,7 @@ type RemoteProgramArgs struct {
 func NewRemoteProgram(args *RemoteProgramArgs) *RemoteProgram {
 
 	// Validate args
-	validateArgs(args)
+	validateRemoteArgs(args)
 
 	// Set stdout as default output if unspecified
 	if args.Writer == nil {
@@ -70,58 +71,7 @@ func NewRemoteProgram(args *RemoteProgramArgs) *RemoteProgram {
 	}
 }
 
-func setConfig(w io.Writer, ctx context.Context, s auto.Stack, config []map[string]string) (auto.Stack, error) {
-	// Set stack config if specified:
-	if config != nil {
-		// set stack configuration using name/value from map
-		for _, key := range config {
-			err := s.SetConfig(ctx, key["name"], auto.ConfigValue{Value: key["value"]})
-			if err != nil {
-				return s, err
-			}
-		}
-
-		utils.Fprintln(w, "Successfully set config")
-	}
-
-	return s, nil
-}
-
-func refreshStack(w io.Writer, ctx context.Context, s auto.Stack) error {
-	utils.Fprintln(w, "Starting refresh")
-
-	result, err := s.Refresh(ctx)
-	if err != nil {
-		utils.Fprintln(w, fmt.Sprintf("Failed to refresh stack: %v\n", err))
-		os.Exit(1)
-	}
-
-	utils.Fprintln(w, fmt.Sprintf("Refresh succeeded!, Result:%s \n", result.Summary.Result))
-
-	return nil
-}
-
-func validateArgs(args *RemoteProgramArgs) {
-
-	if args.ProjectName == "" {
-		exitMessage("ProjectName cannot be empty")
-	}
-
-	if args.GitURL == "" {
-		exitMessage("GitURL cannot be empty")
-	}
-
-	if args.StackName == "" {
-		exitMessage("StackName cannot be empty")
-	}
-}
-
-func exitMessage(message string) {
-	utils.Fprintln(os.Stderr, message)
-	os.Exit(1)
-}
-
-func (r *RemoteProgram) Up() {
+func (r *RemoteProgram) Up() error {
 
 	// Get writer for logging
 	w := r.Writer
@@ -133,13 +83,33 @@ func (r *RemoteProgram) Up() {
 	_, err := r.stack.Up(r.ctx, optup.ProgressStreams(w))
 	if err != nil {
 		utils.Fprintln(w, fmt.Sprintf("Failed to update stack: %v", err))
-		os.Exit(1)
 	} else {
 		utils.Fprintln(w, "Stack successfully updated")
 	}
+
+	return err
 }
 
-func (r *RemoteProgram) Destroy() {
+func (r *RemoteProgram) Preview() error {
+
+	// Get writer for logging
+	w := r.Writer
+	utils.Fprintln(w, "****** Starting Pulumi Up")
+	// Refresh before Pulumi Up
+	refreshStack(w, r.ctx, r.stack)
+
+	// Run destroy
+	_, err := r.stack.Preview(r.ctx, optpreview.ProgressStreams(w))
+	if err != nil {
+		utils.Fprintln(w, fmt.Sprintf("Failed to update stack: %v", err))
+	} else {
+		utils.Fprintln(w, "Stack successfully updated")
+	}
+
+	return err
+}
+
+func (r *RemoteProgram) Destroy() error {
 
 	// Get writer for logging
 	w := r.Writer
@@ -151,8 +121,9 @@ func (r *RemoteProgram) Destroy() {
 	_, err := r.stack.Destroy(r.ctx, optdestroy.ProgressStreams(w))
 	if err != nil {
 		utils.Fprintln(w, fmt.Sprintf("Failed to destroy stack: %v", err))
-		os.Exit(1)
 	} else {
 		utils.Fprintln(w, "Stack successfully destroyed")
 	}
+
+	return err
 }
