@@ -50,7 +50,7 @@ By default, output is sent to `stdout`. Stream output to a file using the follow
 logger := utils.ConfigureLogger("log1.txt")
 ```
 
-And use the above logger whilst creating `RemoteProgramArgs`:
+And use the above logger as a `Writer` whilst creating `RemoteProgramArgs`:
 
 ```go
 	logger := utils.ConfigureLogger("log1.txt")
