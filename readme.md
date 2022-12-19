@@ -1,6 +1,8 @@
 # Overview 
 
-Helper function to run a remote pulumi program. Here's an example:
+Helper function to run a remote pulumi program. Check out the examples below
+
+## Remote Program
 
 ```go
 package main
@@ -40,6 +42,43 @@ func createPulumiProgram() *RemoteProgram {
 	return NewRemoteProgram(args)
 }
 
+```
+
+## Inline Program
+
+```go
+
+package main
+
+func main() {
+    // Create a new pulumi program
+    p := createInlineProgram()
+
+    // Run Pulumi Up
+    p.Up()
+
+}
+
+func createInlineProgram(pulumiFunc pulumi.RunFunc) *pulumirunner.InlineProgram {
+
+	homedir, _ := os.UserHomeDir()
+	logger := utils.ConfigureLogger(homedir + "/ark.log")
+
+	args := &pulumirunner.InlineProgramArgs{
+		ProjectName: "ark-init",
+		StackName:   "dev",
+		Config: []map[string]string{
+			{
+				"name":  "azure-native:location",
+				"value": "westus2",
+			},
+		},
+		Writer:   logger,
+		PulumiFn: pulumiFunc,
+	}
+
+	return pulumirunner.NewInlineProgram(args)
+}
 ```
 
 ## Output Options
