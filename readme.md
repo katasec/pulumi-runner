@@ -67,18 +67,18 @@ func createInlineProgram(pulumiFunc pulumi.RunFunc) *pulumirunner.InlineProgram 
 	args := &pulumirunner.InlineProgramArgs{
 		ProjectName: "ark-init",
 		StackName:   "dev",
-		Config: []map[string]string{
-			{
-				"name":  "azure-native:location",
-				"value": "westus2",
-			},
-		},
 		Writer:   logger,
 		PulumiFn: pulumiFunc,
 	}
 
 	return pulumirunner.NewInlineProgram(args)
 }
+
+func pulumiFunc(ctx *pulumi.Context) error {
+	ctx.Export("Message", pulumi.String("Hello from Pulumi!"))
+	return nil
+}
+
 ```
 
 ## Output Options
