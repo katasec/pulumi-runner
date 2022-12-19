@@ -8,7 +8,9 @@ import (
 
 	"github.com/katasec/pulumi-runner/utils"
 	"github.com/pulumi/pulumi/sdk/v3/go/auto"
+	"github.com/pulumi/pulumi/sdk/v3/go/auto/optdestroy"
 	"github.com/pulumi/pulumi/sdk/v3/go/auto/optpreview"
+	"github.com/pulumi/pulumi/sdk/v3/go/auto/optup"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -37,7 +39,7 @@ func NewInlineProgram(args *InlineProgramArgs) *InlineProgram {
 		args.Writer = os.Stdout
 	}
 	w := args.Writer
-	utils.Fprintln(w, "****** Creating New Remote Pulumi Program")
+	utils.Fprintln(w, "****** Creating New Inline Pulumi Program")
 	// Initialize Context
 	ctx := context.Background()
 
@@ -67,9 +69,41 @@ func (r *InlineProgram) Preview() error {
 	// Run Preview
 	_, err := r.stack.Preview(r.ctx, optpreview.ProgressStreams(w))
 	if err != nil {
+		utils.Fprintln(w, fmt.Sprintf("Error on previewing stack: %v", err))
+	}
+
+	return err
+}
+
+func (r *InlineProgram) Up() error {
+
+	// Get writer for logging
+	w := r.Writer
+	utils.Fprintln(w, "****** Starting Pulumi Preview")
+
+	// Run Preview
+	_, err := r.stack.Up(r.ctx, optup.ProgressStreams(w))
+	if err != nil {
 		utils.Fprintln(w, fmt.Sprintf("Failed to update stack: %v", err))
 	} else {
 		utils.Fprintln(w, "Stack successfully updated")
+	}
+
+	return err
+}
+
+func (r *InlineProgram) Destroy() error {
+
+	// Get writer for logging
+	w := r.Writer
+	utils.Fprintln(w, "****** Starting Pulumi Preview")
+
+	// Run Preview
+	_, err := r.stack.Destroy(r.ctx, optdestroy.ProgressStreams(w))
+	if err != nil {
+		utils.Fprintln(w, fmt.Sprintf("Failed to destroy stack: %v", err))
+	} else {
+		utils.Fprintln(w, "Stack successfully destroyed")
 	}
 
 	return err
