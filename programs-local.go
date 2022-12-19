@@ -79,7 +79,7 @@ func (r *InlineProgram) Up() error {
 
 	// Get writer for logging
 	w := r.Writer
-	utils.Fprintln(w, "****** Starting Pulumi Preview")
+	utils.Fprintln(w, "****** Starting Pulumi Up")
 
 	// Run Preview
 	_, err := r.stack.Up(r.ctx, optup.ProgressStreams(w))
@@ -96,7 +96,7 @@ func (r *InlineProgram) Destroy() error {
 
 	// Get writer for logging
 	w := r.Writer
-	utils.Fprintln(w, "****** Starting Pulumi Preview")
+	utils.Fprintln(w, "****** Starting Pulumi Destroy")
 
 	// Run Preview
 	_, err := r.stack.Destroy(r.ctx, optdestroy.ProgressStreams(w))
