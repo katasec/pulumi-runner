@@ -1,10 +1,13 @@
 package pulumirunner
 
 import (
+	"bytes"
 	"context"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"os"
+	"path"
 
 	"github.com/katasec/pulumi-runner/utils"
 	"github.com/pulumi/pulumi/sdk/v3/go/auto"
@@ -22,6 +25,15 @@ func setConfig(w io.Writer, ctx context.Context, s auto.Stack, config []map[stri
 		}
 
 		utils.Fprintln(w, "Successfully set config")
+
+		// Clean up pipe symbol from the Pulumi yaml config file
+		// This is an workaround for a bug
+		stack := s.Name()
+		workDir := s.Workspace().WorkDir()
+		fName := fmt.Sprintf("Pulumi.%s.yaml", stack)
+		cfgFile := path.Join(workDir, fName)
+
+		replaceInFile(cfgFile, "arkdata: |", "arkdata:")
 	}
 
 	return s, nil
@@ -70,4 +82,19 @@ func validateLocalArgs(args *InlineProgramArgs) {
 func exitMessage(message string) {
 	utils.Fprintln(os.Stderr, message)
 	os.Exit(1)
+}
+
+func replaceInFile(filepath string, src string, dst string) {
+	input, err := ioutil.ReadFile(filepath)
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+
+	output := bytes.Replace(input, []byte(src), []byte(dst), -1)
+
+	if err = ioutil.WriteFile(filepath, output, 0666); err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
 }
