@@ -31,7 +31,7 @@ type RemoteProgramArgs struct {
 	Runtime     string              // Pulumi runtime for e.g. go, dotnet etc.
 	Writer      io.Writer
 
-	stack auto.Stack
+	Stack auto.Stack
 }
 
 // NewRemoteProgram Initalizes a RemoteProgram. This clones a remote Git repository
@@ -60,7 +60,7 @@ func NewRemoteProgram(args *RemoteProgramArgs) *RemoteProgram {
 		utils.Fprintln(w, fmt.Sprintf("Failed to create or select stack: %v\n", err))
 		os.Exit(1)
 	}
-	args.stack = s
+	args.Stack = s
 
 	// Setup Pulumi config for stack
 	setConfig(w, ctx, s, args.Config)
@@ -77,10 +77,10 @@ func (r *RemoteProgram) Up() error {
 	w := r.Writer
 	utils.Fprintln(w, "****** Starting Pulumi Up")
 	// Refresh before Pulumi Up
-	refreshStack(w, r.ctx, r.stack)
+	refreshStack(w, r.ctx, r.Stack)
 
 	// Run Up
-	_, err := r.stack.Up(r.ctx, optup.ProgressStreams(w))
+	_, err := r.Stack.Up(r.ctx, optup.ProgressStreams(w))
 	if err != nil {
 		utils.Fprintln(w, fmt.Sprintf("Failed to update stack: %v", err))
 	} else {
@@ -97,7 +97,7 @@ func (r *RemoteProgram) Preview() error {
 	utils.Fprintln(w, "****** Starting Pulumi Preview")
 
 	// Run Preview
-	_, err := r.stack.Preview(r.ctx, optpreview.ProgressStreams(w))
+	_, err := r.Stack.Preview(r.ctx, optpreview.ProgressStreams(w))
 	if err != nil {
 		utils.Fprintln(w, fmt.Sprintf("Failed to update stack: %v", err))
 	} else {
@@ -113,10 +113,10 @@ func (r *RemoteProgram) Destroy() error {
 	w := r.Writer
 	utils.Fprintln(w, "****** Starting Pulumi Destroy")
 	// Refresh before Pulumi Destroy
-	refreshStack(w, r.ctx, r.stack)
+	refreshStack(w, r.ctx, r.Stack)
 
 	// Run destroy
-	_, err := r.stack.Destroy(r.ctx, optdestroy.ProgressStreams(w))
+	_, err := r.Stack.Destroy(r.ctx, optdestroy.ProgressStreams(w))
 	if err != nil {
 		utils.Fprintln(w, fmt.Sprintf("Failed to destroy stack: %v", err))
 	} else {
