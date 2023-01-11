@@ -1,13 +1,11 @@
 package pulumirunner
 
 import (
-	"bufio"
 	"bytes"
 	"context"
 	"fmt"
 	"io"
 	"os"
-	"path"
 
 	"github.com/katasec/pulumi-runner/utils"
 	"github.com/pulumi/pulumi/sdk/v3/go/auto"
@@ -25,23 +23,6 @@ func setConfig(w io.Writer, ctx context.Context, s auto.Stack, config []map[stri
 		}
 
 		utils.Fprintln(w, "Successfully set config")
-
-		// Clean up pipe symbol from the Pulumi yaml config file. This is a hack to allow injection
-		// of yaml data versus a string literal. This allows us to inject structured data received as
-		// messages from Ark messages queues
-
-		stack := s.Name()
-		workDir := s.Workspace().WorkDir()
-		fName := fmt.Sprintf("Pulumi.%s.yaml", stack)
-		cfgFile := path.Join(workDir, fName)
-
-		fmt.Println("Before file Update:")
-		bufio.NewReader(os.Stdin).ReadBytes('\n')
-
-		replaceInFile(cfgFile, "arkdata: |", "arkdata:")
-
-		fmt.Println("After file Update:")
-		bufio.NewReader(os.Stdin).ReadBytes('\n')
 
 	}
 
