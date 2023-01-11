@@ -1,11 +1,11 @@
 package pulumirunner
 
 import (
+	"bufio"
 	"bytes"
 	"context"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"os"
 	"path"
 
@@ -33,7 +33,14 @@ func setConfig(w io.Writer, ctx context.Context, s auto.Stack, config []map[stri
 		fName := fmt.Sprintf("Pulumi.%s.yaml", stack)
 		cfgFile := path.Join(workDir, fName)
 
+		fmt.Println("Before file Update:")
+		bufio.NewReader(os.Stdin).ReadBytes('\n')
+
 		replaceInFile(cfgFile, "arkdata: |", "arkdata:")
+
+		fmt.Println("After file Update:")
+		bufio.NewReader(os.Stdin).ReadBytes('\n')
+
 	}
 
 	return s, nil
@@ -86,15 +93,15 @@ func exitMessage(message string) {
 
 func replaceInFile(filepath string, src string, dst string) {
 	fmt.Printf("Replace %s with % s in file: %s", src, dst, filepath)
-	input, err := ioutil.ReadFile(filepath)
+	input, err := os.ReadFile(filepath)
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
 
-	output := bytes.Replace(input, []byte(src), []byte(dst), -1)
+	output := bytes.Replace(input, []byte(src), []byte(dst), 1)
 
-	if err = ioutil.WriteFile(filepath, output, 0666); err != nil {
+	if err = os.WriteFile(filepath, output, 0666); err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
