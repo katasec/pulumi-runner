@@ -85,6 +85,7 @@ func exitMessage(message string) {
 }
 
 func replaceInFile(filepath string, src string, dst string) {
+	fmt.Printf("Replace %s with % s in file: %s", src, dst, filepath)
 	input, err := ioutil.ReadFile(filepath)
 	if err != nil {
 		fmt.Println(err)
