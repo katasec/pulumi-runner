@@ -75,7 +75,7 @@ func exitMessage(message string) {
 }
 
 func replaceInFile(filepath string, src string, dst string) {
-	fmt.Printf("Replace %s with % s in file: %s", src, dst, filepath)
+	fmt.Printf("Replacing source: %s\n Destination: %s\n File: %s\n", src, dst, filepath)
 	input, err := os.ReadFile(filepath)
 	if err != nil {
 		fmt.Println(err)
