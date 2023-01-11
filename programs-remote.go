@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"path"
 	"path/filepath"
 
 	"github.com/katasec/pulumi-runner/utils"
@@ -124,4 +125,27 @@ func (r *RemoteProgram) Destroy() error {
 	}
 
 	return err
+}
+
+func (r *RemoteProgram) GetCfgFile() string {
+
+	// Get stack name and workdir
+	stack := r.RemoteProgramArgs.Stack.Name()
+	workDir := r.RemoteProgramArgs.Stack.Workspace().WorkDir()
+
+	// Generate pulumi yaml file name with stack
+	fName := fmt.Sprintf("Pulumi.%s.yaml", stack)
+
+	// Return full path to yaml config file
+	cfgFile := path.Join(workDir, fName)
+
+	return cfgFile
+}
+
+// FixConfig Cleans up an extraneous pipe symbol from the Pulumi yaml config file. This is a hack to allow
+// injection of yaml data received from Ark MQ versus a string literal, as an input parameter to a remote
+// pulumi program. Yaml data from Ark is stored as 'arkdata' in the config file
+func (r *RemoteProgram) FixConfig() {
+	file := r.GetCfgFile()
+	replaceInFile(file, "arkdata: |", "arkdata:")
 }
