@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"io"
+	"log"
 	"os"
 	"path"
 	"path/filepath"
@@ -127,6 +128,11 @@ func (r *RemoteProgram) Destroy() error {
 	return err
 }
 
+func (r *RemoteProgram) CleanUp() {
+	log.Println("Removing Temporary remote folder")
+	os.RemoveAll(r.Stack.Workspace().WorkDir())
+}
+
 func (r *RemoteProgram) GetCfgFile() string {
 
 	// Get stack name and workdir
@@ -148,4 +154,8 @@ func (r *RemoteProgram) GetCfgFile() string {
 func (r *RemoteProgram) FixConfig() {
 	file := r.GetCfgFile()
 	replaceInFile(file, "arkdata: |", "arkdata:")
+}
+
+func RemoveDir(dir string) {
+	os.RemoveAll(dir)
 }
