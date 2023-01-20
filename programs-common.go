@@ -35,7 +35,7 @@ func refreshStack(w io.Writer, ctx context.Context, s auto.Stack) error {
 	result, err := s.Refresh(ctx)
 	if err != nil {
 		utils.Fprintln(w, fmt.Sprintf("Failed to refresh stack: %v\n", err))
-		os.Exit(1)
+		return err
 	}
 
 	utils.Fprintln(w, fmt.Sprintf("Refresh succeeded!, Result:%s \n", result.Summary.Result))
@@ -71,21 +71,23 @@ func validateLocalArgs(args *InlineProgramArgs) {
 
 func exitMessage(message string) {
 	utils.Fprintln(os.Stderr, message)
-	os.Exit(1)
+	//os.Exit(1)
 }
 
-func replaceInFile(filepath string, src string, dst string) {
+func replaceInFile(filepath string, src string, dst string) error {
 	fmt.Printf("Replacing source: %s\n Destination: %s\n File: %s\n", src, dst, filepath)
 	input, err := os.ReadFile(filepath)
 	if err != nil {
 		fmt.Println(err)
-		os.Exit(1)
+		return err
 	}
 
 	output := bytes.Replace(input, []byte(src), []byte(dst), 1)
 
 	if err = os.WriteFile(filepath, output, 0666); err != nil {
 		fmt.Println(err)
-		os.Exit(1)
+		return err
 	}
+
+	return nil
 }

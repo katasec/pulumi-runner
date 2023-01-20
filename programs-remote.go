@@ -38,7 +38,7 @@ type RemoteProgramArgs struct {
 
 // NewRemoteProgram Initalizes a RemoteProgram. This clones a remote Git repository
 // in to a local folder and sets it up as a Pulumi workspace
-func NewRemoteProgram(args *RemoteProgramArgs) *RemoteProgram {
+func NewRemoteProgram(args *RemoteProgramArgs) (*RemoteProgram, error) {
 
 	// Validate args
 	validateRemoteArgs(args)
@@ -60,7 +60,7 @@ func NewRemoteProgram(args *RemoteProgramArgs) *RemoteProgram {
 	s, err := auto.UpsertStackLocalSource(ctx, args.StackName, filepath.Join(workDir, args.ProjectPath))
 	if err != nil {
 		utils.Fprintln(w, fmt.Sprintf("Failed to create or select stack: %v\n", err))
-		os.Exit(1)
+		return nil, err
 	}
 	args.Stack = s
 
@@ -70,7 +70,7 @@ func NewRemoteProgram(args *RemoteProgramArgs) *RemoteProgram {
 	return &RemoteProgram{
 		ctx:               ctx,
 		RemoteProgramArgs: *args,
-	}
+	}, nil
 }
 
 func (r *RemoteProgram) Up() error {

@@ -30,7 +30,7 @@ type InlineProgramArgs struct {
 }
 
 // NewInlineProgram Initalizes a stack using an inline program passed as a func
-func NewInlineProgram(args *InlineProgramArgs) *InlineProgram {
+func NewInlineProgram(args *InlineProgramArgs) (*InlineProgram, error) {
 	// Validate args
 	validateLocalArgs(args)
 
@@ -47,7 +47,7 @@ func NewInlineProgram(args *InlineProgramArgs) *InlineProgram {
 	s, err := auto.UpsertStackInlineSource(ctx, args.StackName, args.ProjectName, args.PulumiFn)
 	if err != nil {
 		utils.Fprintln(w, fmt.Sprintf("Failed to create or select stack: %v\n", err))
-		os.Exit(1)
+		return nil, err
 	}
 	args.stack = s
 
@@ -57,7 +57,7 @@ func NewInlineProgram(args *InlineProgramArgs) *InlineProgram {
 	return &InlineProgram{
 		ctx:               ctx,
 		InlineProgramArgs: *args,
-	}
+	}, nil
 }
 
 func (r *InlineProgram) Preview() error {

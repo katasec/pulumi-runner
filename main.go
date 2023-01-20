@@ -10,13 +10,16 @@ func main() {
 	fmt.Println("test")
 
 	// Create a new pulumi program
-	p := createInlineProgram()
-
-	// Run Pulumi Up
-	p.Preview()
+	p, err := createInlineProgram()
+	if err != nil {
+		fmt.Println("Error : %+v", err)
+	} else {
+		// Run Pulumi Up
+		p.Preview()
+	}
 }
 
-func createRemoteProgram() *RemoteProgram {
+func createRemoteProgram() (*RemoteProgram, error) {
 	args := &RemoteProgramArgs{
 		ProjectName: "ArkInit",
 		GitURL:      "https://github.com/katasec/ArkInit.git",
@@ -42,7 +45,7 @@ func createRemoteProgram() *RemoteProgram {
 	return NewRemoteProgram(args)
 }
 
-func createInlineProgram() *InlineProgram {
+func createInlineProgram() (*InlineProgram, error) {
 	args := &InlineProgramArgs{
 		ProjectName: "Inline",
 		StackName:   "dev",
