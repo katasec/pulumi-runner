@@ -159,3 +159,8 @@ func (r *RemoteProgram) FixConfig() {
 func RemoveDir(dir string) {
 	os.RemoveAll(dir)
 }
+
+func (r *RemoteProgram) SetConfig(val auto.ConfigValue) {
+	r.Stack.SetConfig(r.ctx, "arkdata", val)
+	r.FixConfig()
+}
