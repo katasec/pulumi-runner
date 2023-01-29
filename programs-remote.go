@@ -73,7 +73,7 @@ func NewRemoteProgram(args *RemoteProgramArgs) (*RemoteProgram, error) {
 	}, nil
 }
 
-func (r *RemoteProgram) Up() error {
+func (r *RemoteProgram) Up() (auto.UpResult, error) {
 
 	// Get writer for logging
 	w := r.Writer
@@ -82,14 +82,14 @@ func (r *RemoteProgram) Up() error {
 	refreshStack(w, r.ctx, r.Stack)
 
 	// Run Up
-	_, err := r.Stack.Up(r.ctx, optup.ProgressStreams(w))
+	result, err := r.Stack.Up(r.ctx, optup.ProgressStreams(w))
 	if err != nil {
 		utils.Fprintln(w, fmt.Sprintf("Failed to update stack: %v", err))
 	} else {
 		utils.Fprintln(w, "Stack successfully updated")
 	}
 
-	return err
+	return result, err
 }
 
 func (r *RemoteProgram) Preview() error {
@@ -109,7 +109,7 @@ func (r *RemoteProgram) Preview() error {
 	return err
 }
 
-func (r *RemoteProgram) Destroy() error {
+func (r *RemoteProgram) Destroy() (auto.DestroyResult, error) {
 
 	// Get writer for logging
 	w := r.Writer
@@ -118,14 +118,14 @@ func (r *RemoteProgram) Destroy() error {
 	refreshStack(w, r.ctx, r.Stack)
 
 	// Run destroy
-	_, err := r.Stack.Destroy(r.ctx, optdestroy.ProgressStreams(w))
+	result, err := r.Stack.Destroy(r.ctx, optdestroy.ProgressStreams(w))
 	if err != nil {
 		utils.Fprintln(w, fmt.Sprintf("Failed to destroy stack: %v", err))
 	} else {
 		utils.Fprintln(w, "Stack successfully destroyed")
 	}
 
-	return err
+	return result, err
 }
 
 func (r *RemoteProgram) CleanUp() {

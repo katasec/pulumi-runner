@@ -12,7 +12,7 @@ func main() {
 	// Create a new pulumi program
 	p, err := createInlineProgram()
 	if err != nil {
-		fmt.Println("Error : %+v", err)
+		fmt.Printf("Error : %+v\n", err)
 	} else {
 		// Run Pulumi Up
 		p.Preview()
