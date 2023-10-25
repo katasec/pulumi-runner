@@ -3,16 +3,18 @@ package utils
 import (
 	"fmt"
 	"io"
-	"io/ioutil"
 	"log"
 	"os"
+	"path/filepath"
 	"time"
 
 	"github.com/go-git/go-git/v5"
 )
 
 func CloneRemote(w io.Writer, url string) string {
-	tmpdir, _ := ioutil.TempDir(os.TempDir(), "ark-remote")
+	tmpdirBase := filepath.Join(os.TempDir(), "ark")
+	//tmpdir, _ := os.MkdirTemp(os.TempDir(), "ark-remote")
+	tmpdir, _ := os.MkdirTemp(tmpdirBase, "ark-remote")
 
 	Fprintln(w, "Cloning: "+url)
 	Fprintln(w, "Repo Dir: "+tmpdir)
