@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"strings"
 	"time"
 
 	"github.com/go-git/go-git/v5"
@@ -14,7 +15,7 @@ import (
 func CloneRemote(w io.Writer, url string) string {
 	tmpdirBase := filepath.Join(os.TempDir(), "ark")
 	err := os.Mkdir(tmpdirBase, os.FileMode(0777))
-	if err != nil {
+	if err != nil && !strings.Contains(err.Error(), "file exists") {
 		fmt.Println("could not create tmpdirBase, exitting." + tmpdirBase)
 		fmt.Println(err.Error())
 		os.Exit(1)
