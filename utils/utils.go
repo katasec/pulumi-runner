@@ -13,13 +13,18 @@ import (
 
 func CloneRemote(w io.Writer, url string) string {
 	tmpdirBase := filepath.Join(os.TempDir(), "ark")
-	//tmpdir, _ := os.MkdirTemp(os.TempDir(), "ark-remote")
+	err := os.Mkdir(tmpdirBase, os.FileMode(0777))
+	if err != nil {
+		fmt.Println("could not create tmpdirBase, exitting." + tmpdirBase)
+		fmt.Println(err.Error())
+		os.Exit(1)
+	}
 	tmpdir, _ := os.MkdirTemp(tmpdirBase, "ark-remote")
 
 	Fprintln(w, "Cloning: "+url)
 	Fprintln(w, "Repo Dir: "+tmpdir)
 
-	_, err := git.PlainClone(tmpdir, false, &git.CloneOptions{
+	_, err = git.PlainClone(tmpdir, false, &git.CloneOptions{
 		URL:      url,
 		Progress: w,
 	})
