@@ -64,6 +64,13 @@ func NewRemoteProgram(args *RemoteProgramArgs) (*RemoteProgram, error) {
 	}
 	args.Stack = s
 
+	if args.Plugins != nil {
+		log.Println("Installing plugins")
+		for _, plugin := range args.Plugins {
+			s.Workspace().InstallPlugin(ctx, plugin["name"], plugin["version"])
+		}
+	}
+
 	// Setup Pulumi config for stack
 	setConfig(w, ctx, s, args.Config)
 
