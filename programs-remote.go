@@ -67,6 +67,7 @@ func NewRemoteProgram(args *RemoteProgramArgs) (*RemoteProgram, error) {
 	if args.Plugins != nil {
 		log.Println("Installing plugins")
 		for _, plugin := range args.Plugins {
+			log.Printf("Installing plugin %s:%s", plugin["name"], plugin["version"])
 			s.Workspace().InstallPlugin(ctx, plugin["name"], plugin["version"])
 		}
 	}
