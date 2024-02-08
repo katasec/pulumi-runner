@@ -26,7 +26,7 @@ type LocalProgramArgs struct {
 	Runtime     string              // Pulumi runtime for e.g. go, dotnet etc.
 	Writer      io.Writer
 	WorkDir     string // Path to the pulumi program in your local file system
-	stack       auto.Stack
+	Stack       auto.Stack
 }
 
 // NewLocalProgram Initalizes a stack using a pulimi program in the local file system
@@ -49,7 +49,7 @@ func NewLocalProgram(args *LocalProgramArgs) (*LocalProgram, error) {
 		utils.Fprintln(w, fmt.Sprintf("Failed to create or select stack: %v\n", err))
 		return nil, err
 	}
-	args.stack = s
+	args.Stack = s
 
 	// Setup Pulumi config for stack
 	setConfig(w, ctx, s, args.Config)
@@ -67,7 +67,7 @@ func (r *LocalProgram) Up() error {
 	utils.Fprintln(w, "****** Starting Pulumi Up")
 
 	// Run Preview
-	_, err := r.stack.Up(r.ctx, optup.ProgressStreams(w))
+	_, err := r.Stack.Up(r.ctx, optup.ProgressStreams(w))
 	if err != nil {
 		utils.Fprintln(w, fmt.Sprintf("Failed to update stack: %v", err))
 	} else {
@@ -84,7 +84,7 @@ func (r *LocalProgram) Destroy() error {
 	utils.Fprintln(w, "****** Starting Pulumi Destroy")
 
 	// Run Preview
-	_, err := r.stack.Destroy(r.ctx, optdestroy.ProgressStreams(w))
+	_, err := r.Stack.Destroy(r.ctx, optdestroy.ProgressStreams(w))
 	if err != nil {
 		utils.Fprintln(w, fmt.Sprintf("Failed to destroy stack: %v", err))
 	} else {
@@ -101,7 +101,7 @@ func (r *LocalProgram) Preview() error {
 	utils.Fprintln(w, "****** Starting Pulumi Preview")
 
 	// Run Preview
-	_, err := r.stack.Preview(r.ctx, optpreview.ProgressStreams(w))
+	_, err := r.Stack.Preview(r.ctx, optpreview.ProgressStreams(w))
 	if err != nil {
 		utils.Fprintln(w, fmt.Sprintf("Error on previewing stack: %v", err))
 	}
