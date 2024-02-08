@@ -22,8 +22,8 @@ func CloneRemote(w io.Writer, url string) string {
 	}
 	tmpdir, _ := os.MkdirTemp(tmpdirBase, "ark-remote")
 
-	Fprintln(w, "Cloning: "+url)
-	Fprintln(w, "Repo Dir: "+tmpdir)
+	log.Println("Cloning: " + url)
+	log.Println("Repo Dir: " + tmpdir)
 
 	_, err = git.PlainClone(tmpdir, false, &git.CloneOptions{
 		URL:      url,

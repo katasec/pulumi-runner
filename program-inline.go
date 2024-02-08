@@ -32,7 +32,7 @@ type InlineProgramArgs struct {
 // NewInlineProgram Initalizes a stack using an inline program passed as a func
 func NewInlineProgram(args *InlineProgramArgs) (*InlineProgram, error) {
 	// Validate args
-	validateLocalArgs(args)
+	validateInlineArgs(args)
 
 	// Set stdout as default output if unspecified
 	if args.Writer == nil {
